@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Temiz kurulumda users tablosunda email_verified_at yok; varsa ona göre konumla ve doldur.
+        $hasEmailVerifiedAt = Schema::hasColumn('users', 'email_verified_at');
+
+        Schema::table('users', function (Blueprint $table) use ($hasEmailVerifiedAt) {
+            $column = $table->boolean('email_verify')->default(false);
+            $column->after($hasEmailVerifiedAt ? 'email_verified_at' : 'email');
+        });
+
+        if ($hasEmailVerifiedAt) {
+            DB::table('users')->whereNotNull('email_verified_at')->update(['email_verify' => true]);
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('email_verify');
+        });
+    }
+};

@@ -1,0 +1,32 @@
+# GELİŞTİRME modu: kod container'a canlı bağlanır, değişiklikler build gerekmeden görünür.
+# Kullanım (proje kökünden):
+#   docker compose -f docker-compose.yml -f Docker/compose.dev.yml up -d
+# Sunucuda (production) bu dosyayı KULLANMA.
+
+x-dev-env: &dev-env
+  APP_ENV: local
+  APP_DEBUG: "true"
+  LARAVEL_CACHE: "false"
+
+services:
+  bimilyoncu-server:
+    environment: &bimilyoncu-dev-env
+      <<: *dev-env
+    volumes: &bimilyoncu-dev-volumes
+      - ./bimilyoncu:/var/www/html
+      - /var/www/html/bootstrap/cache          # yereldeki bootstrap/cache'e dokunma
+      - ./Docker/common/php.dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini:ro
+  bimilyoncu-queue:
+    environment: *bimilyoncu-dev-env
+    volumes: *bimilyoncu-dev-volumes
+
+  logistics-server:
+    environment: &logistics-dev-env
+      <<: *dev-env
+    volumes: &logistics-dev-volumes
+      - ./logistics:/var/www/html
+      - /var/www/html/bootstrap/cache
+      - ./Docker/common/php.dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini:ro
+  logistics-scheduler:
+    environment: *logistics-dev-env
+    volumes: *logistics-dev-volumes

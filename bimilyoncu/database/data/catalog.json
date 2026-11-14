@@ -1,0 +1,339 @@
+{
+ "sellers": [
+  {
+   "slug": "bimilyoncu",
+   "name": "b'milyoncu",
+   "logo": null,
+   "shipping_days": 2,
+   "brand_color": "#ff5743"
+  },
+  {
+   "slug": "akcil-mobilya",
+   "name": "Akcıl Mobilya",
+   "logo": "/akcil.png",
+   "shipping_days": 5,
+   "brand_color": "#8a5a34"
+  }
+ ],
+ "products": [
+  {
+   "id": "p19",
+   "slug": "deadpool-3-boyutlu-figur",
+   "name": "Deadpool 3 Boyutlu Figür",
+   "price": 1200,
+   "old_price": null,
+   "image": "/urunler/deadpool-1.jpg",
+   "category_slug": "ev-bahce",
+   "group_slug": "dekorasyon",
+   "item_slug": "figur-biblo",
+   "featured": true,
+   "ai_images": false,
+   "seller": "bimilyoncu",
+   "description": [
+    "Yüksek çözünürlükte 3D baskıyla üretilen Deadpool büst figürü; kostümündeki dikişlerden kemer detaylarına kadar her ayrıntı net şekilde işlenmiştir.",
+    "Boyalı seçenekte her figür tek tek elde boyanır, koruyucu vernikle kaplanır. Kendi boyamanızı yapmak isterseniz boyasız seçeneği tercih edebilirsiniz."
+   ],
+   "specs": [
+    {
+     "label": "Üretim",
+     "value": "3D Baskı"
+    },
+    {
+     "label": "Malzeme",
+     "value": "PLA"
+    },
+    {
+     "label": "Yükseklik",
+     "value": "20 cm"
+    },
+    {
+     "label": "Boyama",
+     "value": "El Boyaması"
+    },
+    {
+     "label": "Kaide",
+     "value": "Altıgen, Dahil"
+    },
+    {
+     "label": "Kullanım Alanı",
+     "value": "Dekoratif / Koleksiyon"
+    }
+   ],
+   "images": [],
+   "colors": [
+    {
+     "name": "Boyalı",
+     "hex": "#9f1d2a",
+     "images": [
+      "/urunler/deadpool-1.jpg",
+      "/urunler/deadpool-2.jpg"
+     ]
+    },
+    {
+     "name": "Boyasız",
+     "hex": "#a3a3a3",
+     "images": []
+    }
+   ]
+  },
+  {
+   "id": "p20",
+   "slug": "dogal-ahsap-kutuk-masa-lambasi",
+   "name": "Doğal Ahşap Kütük Masa Lambası",
+   "price": 1450,
+   "old_price": null,
+   "image": "/urunler/ahsap-aydinlatma-1.jpg",
+   "category_slug": "ev-bahce",
+   "group_slug": "ahsap-urunler",
+   "item_slug": "ahsap-aydinlatma",
+   "featured": true,
+   "ai_images": false,
+   "seller": "bimilyoncu",
+   "description": [
+    "Doğada kendi formunu almış kütüklerden el işçiliğiyle hazırlanan masa lambası. Her gövde doğal yapısı nedeniyle eşsizdir; aynısından ikinci bir tane yoktur.",
+    "Ahşap yüzey doğal vernikle korunur, kumaş abajuru sıcak ve yumuşak bir ışık verir. Salon, çalışma odası ve yatak başı için ideal bir dekoratif aydınlatma."
+   ],
+   "specs": [
+    {
+     "label": "Malzeme",
+     "value": "Doğal Ahşap Kütük"
+    },
+    {
+     "label": "Abajur",
+     "value": "Kumaş"
+    },
+    {
+     "label": "Yükseklik",
+     "value": "65 cm"
+    },
+    {
+     "label": "Duy Tipi",
+     "value": "E27"
+    },
+    {
+     "label": "Kablo Uzunluğu",
+     "value": "180 cm"
+    },
+    {
+     "label": "İşçilik",
+     "value": "El Yapımı"
+    },
+    {
+     "label": "Yüzey",
+     "value": "Doğal Vernik"
+    }
+   ],
+   "images": [
+    "/urunler/ahsap-aydinlatma-2.jpg"
+   ],
+   "colors": [
+    {
+     "name": "Krem Abajur",
+     "hex": "#ece3cf",
+     "images": [
+      "/urunler/ahsap-aydinlatma-1.jpg"
+     ]
+    },
+    {
+     "name": "Beyaz Abajur",
+     "hex": "#f5f5f4",
+     "images": []
+    },
+    {
+     "name": "Antrasit Abajur",
+     "hex": "#3f3f46",
+     "images": []
+    }
+   ]
+  },
+  {
+   "id": "p21",
+   "slug": "el-oymasi-masif-mese-konsol",
+   "name": "El Oyması Masif Meşe Konsol - Mermer Tablalı",
+   "price": 12500,
+   "old_price": null,
+   "image": "/urunler/akcil-konsol-1.jpg",
+   "category_slug": "ev-bahce",
+   "group_slug": "ahsap-urunler",
+   "item_slug": "ahsap-mobilya",
+   "featured": false,
+   "ai_images": false,
+   "seller": "akcil-mobilya",
+   "description": [
+    "Akcıl Mobilya atölyesinde masif meşeden el oymasıyla üretilen konsol, gotik desenli kemerleri ve oymalı kuşağıyla klasik ustalığı evinize taşıyor. Her parça haftalarca süren el işçiliğinin ürünüdür.",
+    "Doğal mermer tablası ısıya ve çizilmeye dayanıklıdır. Antre, salon ya da yemek odasında hem dekoratif hem de kullanışlı bir parça olarak öne çıkar."
+   ],
+   "specs": [
+    {
+     "label": "Malzeme",
+     "value": "Masif Meşe"
+    },
+    {
+     "label": "Tabla",
+     "value": "Doğal Mermer"
+    },
+    {
+     "label": "Ölçü",
+     "value": "110 x 55 x 80 cm"
+    },
+    {
+     "label": "İşçilik",
+     "value": "El Oyması"
+    },
+    {
+     "label": "Dayanıklılık",
+     "value": "Çok Sağlam"
+    },
+    {
+     "label": "Yüzey",
+     "value": "Doğal Yağ Cilası"
+    },
+    {
+     "label": "Montaj",
+     "value": "Kurulu Gönderilir"
+    }
+   ],
+   "images": [],
+   "colors": [
+    {
+     "name": "Koyu Ceviz",
+     "hex": "#4a2f1d",
+     "images": [
+      "/urunler/akcil-konsol-1.jpg",
+      "/urunler/akcil-konsol-2.jpg",
+      "/urunler/akcil-konsol-3.jpg",
+      "/urunler/akcil-konsol-4.jpg"
+     ]
+    },
+    {
+     "name": "Doğal Meşe",
+     "hex": "#a07a52",
+     "images": []
+    }
+   ]
+  },
+  {
+   "id": "p22",
+   "slug": "askili-cekmeceli-ahsap-antre-dolabi",
+   "name": "Askılı ve Çekmeceli Ahşap Antre Dolabı",
+   "price": 2750,
+   "old_price": null,
+   "image": "/urunler/akcil-antre-dolabi-1.jpg",
+   "category_slug": "ev-bahce",
+   "group_slug": "ahsap-urunler",
+   "item_slug": "ahsap-mobilya",
+   "featured": false,
+   "ai_images": true,
+   "seller": "akcil-mobilya",
+   "description": [
+    "Akcıl Mobilya atölyesinde üretilen bu antre dolabı, küçük girişler için tasarlandı. Üst bölümdeki iki ahşap askı ceket ve çantalar için, açık raf anahtar ve küçük dekoratif objeler için yer sunar.",
+    "Altındaki çekmece ve kapaklı bölme ayakkabı ile günlük eşyaları düzenli tutar. İnce ahşap ayakları sayesinde hafif ve ferah bir görünüm verir; 75 cm genişliği ve 35 cm derinliğiyle dar koridorlara bile sığar."
+   ],
+   "specs": [
+    {
+     "label": "Ölçü (Y x G x D)",
+     "value": "180 x 75 x 35 cm"
+    },
+    {
+     "label": "Malzeme",
+     "value": "Ahşap, Meşe Kaplama"
+    },
+    {
+     "label": "Askı",
+     "value": "2 Adet Ahşap Askı"
+    },
+    {
+     "label": "Çekmece",
+     "value": "1 Adet"
+    },
+    {
+     "label": "Dolap",
+     "value": "1 Kapaklı Bölme"
+    },
+    {
+     "label": "Ayaklar",
+     "value": "Masif Ahşap"
+    },
+    {
+     "label": "İşçilik",
+     "value": "Atölye Üretimi"
+    }
+   ],
+   "images": [
+    "/urunler/akcil-antre-dolabi-1.jpg",
+    "/urunler/akcil-antre-dolabi-2.jpg"
+   ],
+   "colors": [
+    {
+     "name": "Beyaz & Ceviz",
+     "hex": "#f5f5f4",
+     "images": []
+    },
+    {
+     "name": "Krem & Meşe",
+     "hex": "#e9dfcc",
+     "images": []
+    }
+   ]
+  },
+  {
+   "id": "p23",
+   "slug": "isikli-ahsap-kahve-istasyonu-kahvelik",
+   "name": "Işıklı Ahşap Kahve İstasyonu - Çekmeceli Kahvelik",
+   "price": 1950,
+   "old_price": null,
+   "image": "/urunler/akcil-kahvelik-1.jpg",
+   "category_slug": "ev-bahce",
+   "group_slug": "ahsap-urunler",
+   "item_slug": "ahsap-mobilya",
+   "featured": false,
+   "ai_images": true,
+   "seller": "akcil-mobilya",
+   "description": [
+    "Akcıl Mobilya atölyesinde üretilen bu kahve istasyonu; espresso makinesi, kahve öğütücü ve filtre kahve makinesini tek bir düzenli köşede toplar. 60 cm genişliği ve 25 cm derinliğiyle tezgah üstüne rahatça yerleşir, mutfakta ya da ofiste kendi kahve köşenizi oluşturur.",
+    "Üst raflardaki gizli LED aydınlatma kahve kavanozlarınızı ve fincanlarınızı öne çıkarır. Yan bölme kapsül, şeker ve karıştırıcılar için; alttaki çekmece ise filtre, kaşık ve yedek malzemeler için yer sunar."
+   ],
+   "specs": [
+    {
+     "label": "Ölçü (Y x G x D)",
+     "value": "80 x 60 x 25 cm"
+    },
+    {
+     "label": "Malzeme",
+     "value": "Ahşap, Meşe Kaplama"
+    },
+    {
+     "label": "Aydınlatma",
+     "value": "Gizli LED Şerit"
+    },
+    {
+     "label": "Raf",
+     "value": "2 Açık Raf + Yan Bölme"
+    },
+    {
+     "label": "Çekmece",
+     "value": "1 Adet, 12 cm Yükseklik"
+    },
+    {
+     "label": "Kullanım",
+     "value": "Tezgah Üstü"
+    },
+    {
+     "label": "İşçilik",
+     "value": "Atölye Üretimi"
+    }
+   ],
+   "images": [
+    "/urunler/akcil-kahvelik-1.jpg",
+    "/urunler/akcil-kahvelik-2.jpg"
+   ],
+   "colors": [
+    {
+     "name": "Doğal Meşe",
+     "hex": "#b08a5e",
+     "images": []
+    }
+   ]
+  }
+ ]
+}

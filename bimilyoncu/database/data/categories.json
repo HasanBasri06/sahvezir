@@ -1,0 +1,292 @@
+[
+  {
+    "name": "3D Printer",
+    "slug": "3d-printer",
+    "children": [
+      {
+        "name": "Yazıcılar",
+        "slug": "yazicilar",
+        "children": [
+          {
+            "name": "FDM Yazıcılar",
+            "slug": "fdm",
+            "children": []
+          },
+          {
+            "name": "Reçine (SLA) Yazıcılar",
+            "slug": "recine",
+            "children": []
+          },
+          {
+            "name": "Yazıcı Kitleri",
+            "slug": "kitler",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Filamentler",
+        "slug": "filamentler",
+        "children": [
+          {
+            "name": "PLA",
+            "slug": "pla",
+            "children": []
+          },
+          {
+            "name": "PETG",
+            "slug": "petg",
+            "children": []
+          },
+          {
+            "name": "ABS",
+            "slug": "abs",
+            "children": []
+          },
+          {
+            "name": "TPU (Esnek)",
+            "slug": "tpu",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Yedek Parça",
+        "slug": "yedek-parca",
+        "children": [
+          {
+            "name": "Nozullar",
+            "slug": "nozullar",
+            "children": []
+          },
+          {
+            "name": "Baskı Tablaları",
+            "slug": "baski-tablalari",
+            "children": []
+          },
+          {
+            "name": "Ekstruderler",
+            "slug": "ekstruderler",
+            "children": []
+          },
+          {
+            "name": "Fan & Soğutma",
+            "slug": "fan-sogutma",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Aksesuarlar",
+        "slug": "aksesuarlar",
+        "children": [
+          {
+            "name": "Filament Kurutucular",
+            "slug": "kurutucular",
+            "children": []
+          },
+          {
+            "name": "Filament Tutucular",
+            "slug": "tutucular",
+            "children": []
+          },
+          {
+            "name": "Bakım & Temizlik",
+            "slug": "bakim-temizlik",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Ev & Bahçe",
+    "slug": "ev-bahce",
+    "children": [
+      {
+        "name": "Mutfak",
+        "slug": "mutfak",
+        "children": [
+          {
+            "name": "Mutfak Düzenleyiciler",
+            "slug": "duzenleyiciler",
+            "children": []
+          },
+          {
+            "name": "Saklama Kapları",
+            "slug": "saklama-kaplari",
+            "children": []
+          },
+          {
+            "name": "Mutfak Gereçleri",
+            "slug": "gerecler",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Dekorasyon",
+        "slug": "dekorasyon",
+        "children": [
+          {
+            "name": "Saksılar",
+            "slug": "saksilar",
+            "children": []
+          },
+          {
+            "name": "Aydınlatma",
+            "slug": "aydinlatma",
+            "children": []
+          },
+          {
+            "name": "Duvar Dekoru",
+            "slug": "duvar-dekoru",
+            "children": []
+          },
+          {
+            "name": "Figür & Biblo",
+            "slug": "figur-biblo",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Bahçe",
+        "slug": "bahce",
+        "children": [
+          {
+            "name": "Solar Aydınlatma",
+            "slug": "solar-aydinlatma",
+            "children": []
+          },
+          {
+            "name": "Bahçe Aletleri",
+            "slug": "aletler",
+            "children": []
+          },
+          {
+            "name": "Sulama",
+            "slug": "sulama",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Ahşap Ürünler",
+        "slug": "ahsap-urunler",
+        "children": [
+          {
+            "name": "Ahşap Mobilya",
+            "slug": "ahsap-mobilya",
+            "children": []
+          },
+          {
+            "name": "Ahşap Aydınlatma",
+            "slug": "ahsap-aydinlatma",
+            "children": []
+          },
+          {
+            "name": "Ahşap Dekor",
+            "slug": "ahsap-dekor",
+            "children": []
+          },
+          {
+            "name": "Ahşap Mutfak Ürünleri",
+            "slug": "ahsap-mutfak",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Düzenleme",
+        "slug": "duzenleme",
+        "children": [
+          {
+            "name": "Raf Sistemleri",
+            "slug": "raflar",
+            "children": []
+          },
+          {
+            "name": "Kutular & Sepetler",
+            "slug": "kutular-sepetler",
+            "children": []
+          },
+          {
+            "name": "Askılıklar",
+            "slug": "askiliklar",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Flaş Ürünler",
+    "slug": "yenilikci-urunler",
+    "children": [
+      {
+        "name": "Akıllı Ev",
+        "slug": "akilli-ev",
+        "children": [
+          {
+            "name": "Akıllı Prizler",
+            "slug": "akilli-prizler",
+            "children": []
+          },
+          {
+            "name": "Akıllı Aydınlatma",
+            "slug": "akilli-aydinlatma",
+            "children": []
+          },
+          {
+            "name": "Sensörler",
+            "slug": "sensorler",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Teknoloji",
+        "slug": "teknoloji",
+        "children": [
+          {
+            "name": "Şarj Cihazları",
+            "slug": "sarj-cihazlari",
+            "children": []
+          },
+          {
+            "name": "Projektörler",
+            "slug": "projektorler",
+            "children": []
+          },
+          {
+            "name": "Kulaklıklar",
+            "slug": "kulakliklar",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Gadget",
+        "slug": "gadget",
+        "children": [
+          {
+            "name": "Masaüstü Gadget'lar",
+            "slug": "masaustu",
+            "children": []
+          },
+          {
+            "name": "Seyahat Ürünleri",
+            "slug": "seyahat",
+            "children": []
+          },
+          {
+            "name": "Hediyelik Ürünler",
+            "slug": "hediyelik",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+]
