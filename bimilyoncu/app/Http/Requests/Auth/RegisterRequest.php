@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Rules\Recaptcha;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -22,7 +21,6 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
-            'recaptcha_token' => ['required', 'string', new Recaptcha],
         ];
     }
 
@@ -39,7 +37,6 @@ class RegisterRequest extends FormRequest
             'password.required' => 'Şifre zorunludur.',
             'password.confirmed' => 'Şifreler eşleşmiyor.',
             'password.min' => 'Şifre en az 8 karakter olmalıdır.',
-            'recaptcha_token.required' => 'Lütfen robot olmadığınızı doğrulayın.',
         ];
     }
 }

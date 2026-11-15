@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -22,14 +21,11 @@ class AuthTest extends TestCase
             'email' => 'ayse@example.com',
             'password' => 'gizli-sifre',
             'password_confirmation' => 'gizli-sifre',
-            'recaptcha_token' => 'test-token',
         ], $overrides);
     }
 
-    public function test_user_can_register_with_valid_recaptcha(): void
+    public function test_user_can_register(): void
     {
-        Http::fake(['www.google.com/recaptcha/*' => Http::response(['success' => true])]);
-
         $this->postJson('/api/auth/register', $this->registerPayload())
             ->assertCreated()
             ->assertJsonStructure(['user' => ['id', 'name', 'email'], 'token']);
@@ -37,19 +33,8 @@ class AuthTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'ayse@example.com']);
     }
 
-    public function test_register_fails_when_recaptcha_is_rejected(): void
-    {
-        Http::fake(['www.google.com/recaptcha/*' => Http::response(['success' => false])]);
-
-        $this->postJson('/api/auth/register', $this->registerPayload())
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('recaptcha_token');
-    }
-
     public function test_register_requires_matching_passwords(): void
     {
-        Http::fake(['www.google.com/recaptcha/*' => Http::response(['success' => true])]);
-
         $this->postJson('/api/auth/register', $this->registerPayload(['password_confirmation' => 'farkli-sifre']))
             ->assertUnprocessable()
             ->assertJsonValidationErrors('password');
