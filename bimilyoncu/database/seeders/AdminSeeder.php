@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $email = env('ADMIN_SEED_EMAIL');
-        $password = env('ADMIN_SEED_PASSWORD');
+        $password = "123456";
         if (! $email || ! $password || Admin::where('email', $email)->exists()) {
             return;
         }
