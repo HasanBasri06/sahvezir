@@ -18,7 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ['prefix' => 'api/seller', 'middleware' => ['api', 'auth:seller']],
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // HTTPS önünde Caddy (ters vekil) var: X-Forwarded-Proto/Host'a güvenilir, URL'ler https üretilir
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

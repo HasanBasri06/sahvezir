@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // HTTPS önünde Caddy (ters vekil) var: X-Forwarded-Proto/Host'a güvenilir, URL'ler https üretilir
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'user.active' => \App\Http\Middleware\EnsureActiveUserAccount::class,
         ]);
