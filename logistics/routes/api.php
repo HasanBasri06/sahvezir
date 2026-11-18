@@ -200,6 +200,8 @@ Route::controller(VehicleOwnerController::class)
         Route::post('/orders/{shipmentId}/start', 'startJob');
         Route::post('/orders/{shipmentId}/delegate', 'delegateJob');
         Route::get('/fleet-jobs', 'fleetJobs');
+        // Genel Bakış: araçlar + araç başına tamamlanan iş, toplam km
+        Route::get('/stats', 'vehicleStats');
         Route::post('/location', 'updateLocation');
     });
 

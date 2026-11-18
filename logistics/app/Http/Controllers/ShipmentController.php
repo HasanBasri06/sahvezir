@@ -6,6 +6,7 @@ use App\Events\MessageSent;
 use App\Events\RequestSent;
 use App\Mail\OfferSentMail;
 use App\Models\Car;
+use App\Models\CarDetail;
 use App\Models\Message;
 use App\Models\PostType;
 use App\Models\Requests;
@@ -457,6 +458,16 @@ class ShipmentController extends Controller
                 'stops' => $routeCities->citiesBetween($s->f_where_city, $s->t_where_city),
                 'from' => implode(' / ', array_filter([$s->f_where_city, $s->f_where_district])),
                 'to' => implode(' / ', array_filter([$s->t_where_city, $s->t_where_district])),
+                // Harita: yükleme / boşaltma noktası (tam konum yoksa il merkezi) ve aracın son konumu
+                'from_point' => $this->locationPoint($s->f_where_location) ?? $routeCities->cityPoint($s->f_where_city),
+                'to_point' => $this->locationPoint($s->t_where_location) ?? $routeCities->cityPoint($s->t_where_city),
+                'live_point' => $order && $order->last_lat !== null && $order->last_lng !== null
+                    ? ['lat' => (float) $order->last_lat, 'lng' => (float) $order->last_lng, 'at' => $order->progress_updated_at?->toIso8601String()]
+                    : null,
+                'departure_date' => $s->departure_date ? \Illuminate\Support\Carbon::parse($s->departure_date)->format('d.m.Y') : null,
+                    'departure_time' => $s->departure_time,
+                'time_arrival' => $s->time_arrival,
+                'weight' => $s->weight,
                 'deal_type' => $dealType,
                 'amount' => $amount,
                 'car' => $car ? [
@@ -480,7 +491,54 @@ class ShipmentController extends Controller
             'reviews_avg' => round((float) ((clone $comments)->avg('score') ?? 0), 1),
         ];
 
-        return $this->success(['routes' => $routes, 'stats' => $stats]);
+        // Genel Bakış haritası: henüz kimseyle anlaşılmamış (yayındaki) ilanlar
+        $listings = Shipment::with(['shipmentCars.car', 'shipmentCars.carDetail', 'car', 'getCarDetail'])
+            ->withCount('requests')
+            ->where('creater_id', $user->id)
+            ->where('status', 'active')
+            ->orderByDesc('created_at')
+            ->limit(100)
+            ->get()
+            ->map(function (Shipment $s) use ($routeCities) {
+                $vehicles = $s->shipmentCars->map(fn ($row) => trim(implode(' / ', array_filter([$row->car?->name, $row->carDetail?->value]))))
+                    ->filter()->values()->all();
+                if (! $vehicles) {
+                    $vehicles = array_values(array_filter([trim(implode(' / ', array_filter([$s->car?->name, $s->getCarDetail?->value])))]));
+                }
+                $price = (float) $s->getRawOriginal('price');
+
+                return [
+                    'shipment_id' => (int) $s->id,
+                    'slug' => $s->slug,
+                    'from' => implode(' / ', array_filter([$s->f_where_city, $s->f_where_district])),
+                    'to' => implode(' / ', array_filter([$s->t_where_city, $s->t_where_district])),
+                    'from_point' => $this->locationPoint($s->f_where_location) ?? $routeCities->cityPoint($s->f_where_city),
+                    'to_point' => $this->locationPoint($s->t_where_location) ?? $routeCities->cityPoint($s->t_where_city),
+                    'departure_date' => $s->departure_date ? \Illuminate\Support\Carbon::parse($s->departure_date)->format('d.m.Y') : null,
+                    'departure_time' => $s->departure_time,
+                    'time_arrival' => $s->time_arrival,
+                    'weight' => $s->weight,
+                    'amount' => $price > 0 ? $price : null,
+                    'vehicles' => $vehicles,
+                    'requests_count' => (int) $s->requests_count,
+                    'created_at' => $s->created_at?->toIso8601String(),
+                ];
+            })->values()->all();
+
+        return $this->success(['routes' => $routes, 'listings' => $listings, 'stats' => $stats]);
+    }
+
+    /** shipments.f_where_location / t_where_location JSON'undan {lat, lng} */
+    private function locationPoint($location): ?array
+    {
+        if (is_string($location)) {
+            $location = json_decode($location, true);
+        }
+        if (! is_array($location) || ! is_numeric($location['lat'] ?? null) || ! is_numeric($location['lng'] ?? null)) {
+            return null;
+        }
+
+        return ['lat' => (float) $location['lat'], 'lng' => (float) $location['lng']];
     }
 
     public function getAll(Request $request)
@@ -737,6 +795,12 @@ class ShipmentController extends Controller
         $yuklenecekYer = $request->yuklenecekYer['city'];
         $yuklenecekYerDistrict = $request->yuklenecekYer['district'];
         $routeInfo = $request->routeInfo;
+        // Rota özetindeki mesafe (km): "345.2" / "345,2" / "345 km" → 345.2; yoksa null
+        $distanceKm = null;
+        if (is_array($routeInfo) && isset($routeInfo['distance']) && preg_match('/[\d.,]+/', (string) $routeInfo['distance'], $dm)) {
+            $parsedKm = (float) str_replace(',', '.', $dm[0]);
+            $distanceKm = $parsedKm > 0 && $parsedKm < 5000 ? round($parsedKm, 1) : null;
+        }
         $hours = (is_array($routeInfo) && ! empty($routeInfo['duration']))
             ? $routeInfo['duration']
             : 'belirlenecek';
@@ -798,6 +862,7 @@ class ShipmentController extends Controller
             't_where_district' => $bosaltilanYerDistrict,
             't_where_location' => $this->sanitizeExactLocation($request->input('bosaltilanYer.exact_location')),
             'hours' => $hours,
+            'distance_km' => $distanceKm,
             'creater_id' => $userId,
             'car_id' => $carId,
             'car_detail_id' => $carDetailId,
@@ -990,33 +1055,47 @@ class ShipmentController extends Controller
      */
     private function normalizeSelectedCars(Request $request): array
     {
-        $firstDetailId = function ($raw): ?int {
-            $first = trim(explode(',', (string) ($raw ?? ''))[0]);
+        // "3,5" → [3, 5]: aynı araç türünün birden fazla detayı seçilebilir (ör. Panelvan Kısa + Uzun)
+        $detailIds = function ($raw): array {
+            return collect(explode(',', (string) ($raw ?? '')))
+                ->map(fn ($v) => trim($v))
+                ->filter(fn ($v) => is_numeric($v))
+                ->map(fn ($v) => (int) $v)
+                ->unique()
+                ->values()
+                ->all();
+        };
 
-            return is_numeric($first) ? (int) $first : null;
+        /** Her (araç, detay) çifti ayrı bir araç kaydı; detay yoksa tek kayıt (detaysız) */
+        $expand = function (int $carId, $rawDetails) use ($detailIds): array {
+            $ids = $detailIds($rawDetails);
+            if (! $ids) {
+                return [['car_id' => $carId, 'car_detail_id' => null]];
+            }
+
+            return array_map(fn ($d) => ['car_id' => $carId, 'car_detail_id' => $d], $ids);
         };
 
         $items = [];
         $selectedCars = $request->input('selectedCars');
         if (is_array($selectedCars) && ! empty($selectedCars)) {
             foreach ($selectedCars as $item) {
-                $items[] = [
-                    'car_id' => (int) ($item['id'] ?? 0),
-                    'car_detail_id' => $firstDetailId($item['detail_id'] ?? null),
-                ];
+                array_push($items, ...$expand((int) ($item['id'] ?? 0), $item['detail_id'] ?? null));
             }
         } elseif (! empty($request->selectedCar['id'])) {
-            $items[] = [
-                'car_id' => (int) $request->selectedCar['id'],
-                'car_detail_id' => $firstDetailId($request->selectedDetailValues['id'] ?? null),
-            ];
+            array_push($items, ...$expand((int) $request->selectedCar['id'], $request->selectedDetailValues['id'] ?? null));
         }
 
         $validIds = Car::whereIn('id', array_column($items, 'car_id'))->pluck('id')->all();
+        // Detay gerçekten o araca ait mi (başka aracın detay id'si gönderilmesin)
+        $validDetails = CarDetail::whereIn('id', array_filter(array_column($items, 'car_detail_id')))
+            ->pluck('car_id', 'id')
+            ->all();
 
         return collect($items)
             ->filter(fn ($i) => in_array($i['car_id'], $validIds, true))
-            ->unique('car_id')
+            ->filter(fn ($i) => $i['car_detail_id'] === null || (int) ($validDetails[$i['car_detail_id']] ?? 0) === $i['car_id'])
+            ->unique(fn ($i) => $i['car_id'].'-'.($i['car_detail_id'] ?? 0))
             ->values()
             ->all();
     }

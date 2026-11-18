@@ -253,6 +253,14 @@ class RouteCitiesService
         return 6371.0 * 2 * asin(min(1.0, sqrt($h)));
     }
 
+    /** İl merkezinin koordinatı (tam konum kaydı olmayan eski ilanlar için harita noktası) */
+    public function cityPoint(?string $city): ?array
+    {
+        $p = $this->findProvince($city);
+
+        return $p ? ['lat' => (float) $p[1], 'lng' => (float) $p[2]] : null;
+    }
+
     /** @return array{0: string, 1: float, 2: float}|null */
     private function findProvince(?string $city): ?array
     {

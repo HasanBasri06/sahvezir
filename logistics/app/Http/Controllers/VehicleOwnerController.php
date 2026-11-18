@@ -443,6 +443,89 @@ class VehicleOwnerController extends Controller
     }
 
     /**
+     * Genel Bakış (araç sahibi): araçları ve her aracın istatistiği — tamamlanan iş, toplam km (tamamlanan işlerin
+     * ilan mesafelerinden), yoldaki / bekleyen iş. İşin aracı aktif iş ekranı ile aynı kuralla bulunur.
+     * Mesafesi kaydedilmemiş eski ilanlar km toplamına girmez (`km_missing_jobs` ile sayılır).
+     */
+    public function vehicleStats(Request $request)
+    {
+        $user = $request->user();
+        if ((string) $user->type !== 'vehicle_owner') {
+            return $this->success(['vehicles' => [], 'totals' => null]);
+        }
+
+        $cars = UserCar::with('car', 'carDetail')
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->orderBy('created_at')
+            ->get();
+
+        $orders = ShipmentOrder::with([
+            'shipment' => fn ($q) => $q->with([
+                'requests' => fn ($r) => $r->where('status', 'accepted')->where('user_id', $user->id),
+            ]),
+        ])
+            ->where('buyer_user', $user->id)
+            ->whereHas('shipment', fn ($q) => $q->whereIn('status', ['accepted', 'done']))
+            ->get();
+
+        $blank = fn () => ['completed_jobs' => 0, 'total_km' => 0.0, 'active_jobs' => 0, 'pending_jobs' => 0, 'km_missing_jobs' => 0];
+        $byCar = [];
+        $totals = $blank();
+        foreach ($orders as $order) {
+            $s = $order->shipment;
+            if (! $s) {
+                continue;
+            }
+            $carId = $this->jobUserCarId($order, $s->requests->first()) ?? 0;
+            $byCar[$carId] ??= $blank();
+            foreach ([&$byCar[$carId], &$totals] as &$bucket) {
+                if ((string) $s->status === 'done') {
+                    $bucket['completed_jobs']++;
+                    if ($s->distance_km !== null) {
+                        $bucket['total_km'] += (float) $s->distance_km;
+                    } else {
+                        $bucket['km_missing_jobs']++;
+                    }
+                } elseif ($order->started_at) {
+                    $bucket['active_jobs']++;
+                } else {
+                    $bucket['pending_jobs']++;
+                }
+            }
+            unset($bucket);
+        }
+
+        $vehicles = $cars->map(function (UserCar $uc) use ($request, $byCar, $blank) {
+            $detailImage = $uc->carDetail?->image ?: $uc->car?->image;
+
+            return [
+                'id' => (int) $uc->id,
+                'name' => $uc->car?->name,
+                'detail' => $uc->carDetail?->value,
+                'plate' => $uc->plate,
+                'capacity_kg' => $uc->capacity_kg !== null ? (int) $uc->capacity_kg : null,
+                'image' => CatalogAssetUrl::vehicle($request, $detailImage),
+                'opened_image' => CatalogAssetUrl::openedVehicle($request, $detailImage),
+                'stats' => array_merge($blank(), $byCar[(int) $uc->id] ?? []),
+            ];
+        })->values();
+
+        $totals['total_km'] = round($totals['total_km'], 1);
+
+        return $this->success([
+            'vehicles' => $vehicles->map(function ($v) {
+                $v['stats']['total_km'] = round($v['stats']['total_km'], 1);
+
+                return $v;
+            }),
+            'totals' => $totals,
+            // Aracı belirlenemeyen (eski) işler
+            'unassigned' => isset($byCar[0]) ? array_merge($byCar[0], ['total_km' => round($byCar[0]['total_km'], 1)]) : null,
+        ]);
+    }
+
+    /**
      * İşi başkasına ver: sürücü hesabı (users.type = driver) oluşturulur / güncellenir, iş seçilen araçla ona verilir.
      * İş sürücü "İşi Başlat" diyene kadar başlamaz. Sürücü telefon + şifre ile girer; yalnızca bu aktif işi görür ve "Teslim Et" ile bitirir.
      * Giriş bilgileri şimdilik log'a yazılır (SMS ile gönderim daha sonra).

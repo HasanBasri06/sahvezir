@@ -16,8 +16,8 @@ class MessagePushService
     ) {}
 
     /**
-     * Yük sahibinden araç sahibine normal mesaj: 1. okunmamış → bildirim;
-     * alıcı okumadan 4 mesaj daha (toplam 5) → ilandaki yoğun yanıt bildirimi.
+     * Her normal mesaj → alıcıya bir bildirim (yön fark etmez: yük sahibi ↔ araç sahibi ↔ sürücü).
+     * Bildirimde gönderenin adı ve mesajın ilk 120 karakteri; dokununca o sohbet açılır.
      */
     public function notifyOnNormalMessage(Message $message): void
     {
@@ -34,10 +34,6 @@ class MessagePushService
             return;
         }
 
-        if (! $this->isCargoOwnerToVehicleOwner($sender, $receiver)) {
-            return;
-        }
-
         $senderId = (int) $message->sender_id;
         $receiverId = (int) $message->receiver_id;
         $shipmentId = $message->shipment_id ? (int) $message->shipment_id : null;
@@ -47,7 +43,6 @@ class MessagePushService
 
         $shipment = $message->shipment;
         $slug = $shipment ? (string) $shipment->slug : '';
-        $route = $shipment instanceof Shipment ? $this->shipmentRouteLabel($shipment) : null;
 
         $receiver->loadMissing('pushDevice');
 
@@ -64,23 +59,8 @@ class MessagePushService
 
         Log::info('push.message.evaluate', $baseLog);
 
-        /** 1. okunmamış mesaj → yeni mesaj bildirimi (geçmiş sohbet olsa da) */
-        if ($unreadFromSender === 1) {
-            $this->sendFirstMessagePush($receiver, $sender, $message, $slug, $baseLog);
-
-            return;
-        }
-
-        /** 5. okunmamış mesaj (1 + 4 ek) → ilandaki yoğun yanıt bildirimi */
-        if ($unreadFromSender === 5) {
-            $this->sendDemandRisingPush($receiver, $sender, $route, $slug, $shipmentId, $baseLog);
-        }
-    }
-
-    private function isCargoOwnerToVehicleOwner(User $sender, User $receiver): bool
-    {
-        return ($sender->type ?? '') === 'cargo_owner'
-            && ($receiver->type ?? '') === 'vehicle_owner';
+        // Her mesaj için ayrı bildirim
+        $this->sendFirstMessagePush($receiver, $sender, $message, $slug, $baseLog);
     }
 
     private function countUnreadNormalFromSender(int $senderId, int $receiverId, ?int $shipmentId = null): int
@@ -129,33 +109,6 @@ class MessagePushService
             ],
             array_merge($baseLog, ['event' => 'message_first']),
             'push.message.first'
-        );
-    }
-
-    private function sendDemandRisingPush(
-        User $receiver,
-        User $sender,
-        ?string $route,
-        string $slug,
-        ?int $shipmentId,
-        array $baseLog,
-    ): void {
-        $routeLabel = $route ?? 'İlanınız';
-        $body = "{$routeLabel} ilandaki mesajınıza çok fazla yanıt geliyor.";
-
-        $this->dispatch(
-            $receiver,
-            'Çok fazla yanıt',
-            $body,
-            [
-                'type' => 'message_demand_rising',
-                'shipment_id' => $shipmentId ? (string) $shipmentId : '',
-                'slug' => $slug,
-                'sender_id' => (string) $sender->id,
-                'sender_name' => trim((string) $sender->full_name),
-            ],
-            array_merge($baseLog, ['event' => 'message_demand_rising']),
-            'push.message.demand_rising'
         );
     }
 
